@@ -1,16 +1,74 @@
+/* Index page style */
 .text-center {
     text-align: center;
 }
 
 svg {
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    height: 400px;
 }
 
-.watch-bg {
+.top-title {
+    color: #474646;
+}
+
+/* Clock Borders and background */
+.clock-bg {
     fill: #474646;
 }
 
-line {
-    stroke-linecap: round;
+.clock-border-outer{
+    stroke:darkgrey;
+    stroke-width:"1";
+}
+
+.clock-border-inner {
+    stroke:lightgrey;
+    stroke-width:"1"; 
+    fill:#fffbf7;   
+}
+
+/* Clock Hands */
+.clock-hand-hour {
+    stroke:#474646;
+    stroke-width:2;
+    stroke-linecap:round;
+}
+
+.clock-hand-minute{
+    stroke:#474646;
+    stroke-width:1.4;
+    stroke-linecap:round;
+}
+
+.clock-hand-second {
+    stroke:#FF6F6F;
+    stroke-width:1;
+    stroke-linecap:round;
+}
+
+/* Clock Digits */
+.clock-hour-number {
+    font-size: 6px;
+    fill: #474646;
+}
+
+/* Clock line marks */
+.clock-hour-line {
+    stroke: #726b6b;
+    stroke-width: 1.2;
+}
+
+.clock-minute-line {
+    stroke: #726b6b;
+    stroke-width: 0.75;
+}
+
+/* Clock background top image */
+.clock-top-bg-image {
+    shape-rendering:geometricPrecision;
+    text-rendering:geometricPrecision; 
+    image-rendering:optimizeQuality; 
+    fill-rule:evenodd; 
+    clip-rule:evenodd;
 }
