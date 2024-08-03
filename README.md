@@ -1,7 +1,3 @@
-Here's an example of a `README.md` file for your app:
-
----
-
 # Analog SVG Clock
 
 This project demonstrates how to create an analog clock using SVG (Scalable Vector Graphics) and JavaScript. It serves as a template to understand the basics of SVG and how to manipulate SVG elements dynamically.
