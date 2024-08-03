@@ -49,13 +49,10 @@ To use this clock in your own project:
     <div class="text-center">
         <svg id="clockContainer" viewBox="0 0 100 100"></svg>
     </div>
-
-    <script type="module">
-        import ClockModule from './js/svg-clock.js';
-        
+    
+    <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const clock = ClockModule.createClock();
-            clock.initializeClock('clockContainer');
+            const clock = ClockModule.createClock('clockContainer');
         });
     </script>
     ```
