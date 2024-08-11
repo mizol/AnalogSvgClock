@@ -1,5 +1,13 @@
 (function (global) {
     const ClockModule = (function () {
+
+        // Helper function to calculate coordinates based on angle and radius
+        function calculateCoordinates(angle, radius, hasCorrection = false) {
+            const x = 50 + radius * Math.cos(angle);
+            const y = 50 + radius * Math.sin(angle) + (hasCorrection ? 1 : 0);
+            return { x, y };
+        }
+
         function createClock(containerId) {
             const _clockSvgId = containerId + 'SVGClock';
 
@@ -10,7 +18,7 @@
                 return;
             }   
 
-            function createClockSvg(svgContainer) {
+            function createClockSvg() {
                 // Create the main SVG element
                 const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 svg.setAttribute("id", _clockSvgId);
@@ -21,115 +29,82 @@
                 clockBackground.setAttribute("id", "clockBackground");
                 clockBackground.setAttribute("viewBox", "0 0 100 100");
             
-                // Create the outer circle
-                const outerCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                outerCircle.setAttribute("cx", "50");
-                outerCircle.setAttribute("cy", "50");
-                outerCircle.setAttribute("r", "45.5");
-                outerCircle.setAttribute("class", "clock-border-outer");
-            
-                // Create the inner circle
-                const innerCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                innerCircle.setAttribute("cx", "50");
-                innerCircle.setAttribute("cy", "50");
-                innerCircle.setAttribute("r", "45");
-                innerCircle.setAttribute("class", "clock-border-inner");
-            
-                // Append the circles to the clockBackground
-                clockBackground.appendChild(outerCircle);
-                clockBackground.appendChild(innerCircle);
+                // Create the outer and inner circles
+                const circles = [
+                    { r: "45.5", class: "clock-border-outer" },
+                    { r: "45", class: "clock-border-inner" }
+                ];
+
+                circles.forEach(({ r, class: cls }) => {
+                    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    circle.setAttribute("cx", "50");
+                    circle.setAttribute("cy", "50");
+                    circle.setAttribute("r", r);
+                    circle.setAttribute("class", cls);
+                    clockBackground.appendChild(circle);
+                });
             
                 // Append the clockBackground to the main SVG
                 svg.appendChild(clockBackground);
-            
-                // Get the container and append the SVG
                 svgContainer.appendChild(svg);
+                return svg;
             }
 
             function renderClockHandsAndCenterCircle(svg) {
-                            
                 const marksAndHandsGroup = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 marksAndHandsGroup.setAttribute("id", "analogClockId");
                 marksAndHandsGroup.setAttribute("viewBox", "0 0 100 100");
-            
-                const centerCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                centerCircle.setAttribute("cx", "50");
-                centerCircle.setAttribute("cy", "50");
-                centerCircle.setAttribute("r", "2");
-                centerCircle.setAttribute("class", "clock-bg");
-            
-                const hourHand = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                hourHand.setAttribute("id", "hour");
-                hourHand.setAttribute("x1", "50");
-                hourHand.setAttribute("y1", "50");
-                hourHand.setAttribute("x2", "50");
-                hourHand.setAttribute("y2", "26");
-                hourHand.setAttribute("class", "clock-hand-hour");
-            
-                const minuteHand = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                minuteHand.setAttribute("id", "minute");
-                minuteHand.setAttribute("x1", "50");
-                minuteHand.setAttribute("y1", "50");
-                minuteHand.setAttribute("x2", "50");
-                minuteHand.setAttribute("y2", "20");
-                minuteHand.setAttribute("class", "clock-hand-minute");
-            
-                const secondHand = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                secondHand.setAttribute("id", "second");
-                secondHand.setAttribute("x1", "50");
-                secondHand.setAttribute("y1", "50");
-                secondHand.setAttribute("x2", "50");
-                secondHand.setAttribute("y2", "19");
-                secondHand.setAttribute("class", "clock-hand-second");
-            
-                const centerFillCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                centerFillCircle.setAttribute("cx", "50");
-                centerFillCircle.setAttribute("cy", "50");
-                centerFillCircle.setAttribute("r", "2");
-                centerFillCircle.setAttribute("fill", "#474646");
-            
-                marksAndHandsGroup.appendChild(centerCircle);
-                marksAndHandsGroup.appendChild(hourHand);
-                marksAndHandsGroup.appendChild(minuteHand);
-                marksAndHandsGroup.appendChild(secondHand);
-                marksAndHandsGroup.appendChild(centerFillCircle);
-            
+
+                const elements = [
+                    { tag: "circle", attrs: { cx: "50", cy: "50", r: "2", class: "clock-bg" } },
+                    { tag: "line", attrs: { id: "hour", x1: "50", y1: "50", x2: "50", y2: "26", class: "clock-hand-hour" } },
+                    { tag: "line", attrs: { id: "minute", x1: "50", y1: "50", x2: "50", y2: "20", class: "clock-hand-minute" } },
+                    { tag: "line", attrs: { id: "second", x1: "50", y1: "50", x2: "50", y2: "19", class: "clock-hand-second" } },
+                    { tag: "circle", attrs: { cx: "50", cy: "50", r: "2", fill: "#474646" } }
+                ];
+
+                elements.forEach(({ tag, attrs }) => {
+                    const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+                    for (const [attr, value] of Object.entries(attrs)) {
+                        element.setAttribute(attr, value);
+                    }
+                    marksAndHandsGroup.appendChild(element);
+                });
+
                 svg.appendChild(marksAndHandsGroup);
             }
 
             function renderClockDigits(svg) {
-
                 const markRadius = 34.5;
+                const fragment = document.createDocumentFragment();
+
                 for (let i = 1; i <= 12; i++) {
                     const angle = ((i * 30) - 90) * (Math.PI / 180);
-
                     const point = calculateCoordinates(angle, markRadius, true);
-
                     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+
                     text.setAttribute("x", point.x);
                     text.setAttribute("y", point.y);
                     text.setAttribute("text-anchor", "middle");
                     text.setAttribute("alignment-baseline", "middle");
                     text.setAttribute("class", "clock-hour-number");
                     text.textContent = i;
-                    svg.appendChild(text);
+
+                    fragment.appendChild(text);
                 }
+
+                svg.appendChild(fragment);
             }
 
             function renderClockMarks(svg) {
-                
+                const fragment = document.createDocumentFragment();
+
                 for (let i = 0; i < 60; i++) {
                     const angle = (i * 6) * (Math.PI / 180);
-
-                    // Outer circle radius for minute marks
                     const minuteMarkOuterRadius = 43;
                     const pointMinuteOuter = calculateCoordinates(angle, minuteMarkOuterRadius);
-
-                    // Inner circle radius for hour marks
                     const hourMarkInnerRadius = 39;
                     const pointHourInner = calculateCoordinates(angle, hourMarkInnerRadius);
-
-                    // Inner circle radius for minute marks
                     const minuteMarkInnerRadius = 40.5;
                     const pointMinuteInner = calculateCoordinates(angle, minuteMarkInnerRadius);
 
@@ -146,8 +121,11 @@
                         line.setAttribute("y2", pointMinuteInner.y);
                         line.setAttribute("class", "clock-minute-line");
                     }
-                    svg.appendChild(line);
-                }                
+
+                    fragment.appendChild(line);
+                }
+
+                svg.appendChild(fragment);
             }
 
             function renderClockHands(svg) {
@@ -169,31 +147,22 @@
                 hourHand.setAttribute('transform', `rotate(${hourAngle} 50 50)`);
             }
 
-            function calculateCoordinates(angle, radius, hasCorrection = false) {
-                const x = 50 + radius * Math.cos(angle);
-                // Adjust clock digits vertical position
-                const y = 50 + radius * Math.sin(angle) + (hasCorrection ? 1 : 0);
-                return { x, y };
-            }
-
-            // Create main svg container, clock circles, and clock background
-            createClockSvg(svgContainer);
-
-            // Get main svg element
-            const svg = document.getElementById(_clockSvgId);
-
+            // Create and render the clock SVG elements
+            const svg = createClockSvg();
             renderClockHandsAndCenterCircle(svg);
-
             renderClockDigits(svg);
-
             renderClockMarks(svg);
-
             renderClockHands(svg);
 
-            setInterval(renderClockHands, 1000, svg);
+            function updateClockHands() {
+                renderClockHands(svg);
+                requestAnimationFrame(updateClockHands);
+            }
+
+            requestAnimationFrame(updateClockHands);
 
             return {
-                updateClockHands: renderClockHands
+                updateClockHands
             };
         }
 
