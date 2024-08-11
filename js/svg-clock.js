@@ -43,7 +43,6 @@
                 svg.appendChild(clockBackground);
             
                 // Get the container and append the SVG
-                //const clockContainer = document.getElementById(containerId);
                 svgContainer.appendChild(svg);
             }
 
@@ -123,7 +122,7 @@
                     const angle = (i * 6) * (Math.PI / 180);
 
                     // Outer circle radius for minute marks
-                    const minuteMarkOuterRadius = 42;
+                    const minuteMarkOuterRadius = 43;
                     const pointMinuteOuter = calculateCoordinates(angle, minuteMarkOuterRadius);
 
                     // Inner circle radius for hour marks
@@ -131,7 +130,7 @@
                     const pointHourInner = calculateCoordinates(angle, hourMarkInnerRadius);
 
                     // Inner circle radius for minute marks
-                    const minuteMarkInnerRadius = 40;
+                    const minuteMarkInnerRadius = 40.5;
                     const pointMinuteInner = calculateCoordinates(angle, minuteMarkInnerRadius);
 
                     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
