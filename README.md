@@ -17,6 +17,8 @@ This project demonstrates how to create an analog clock using SVG (Scalable Vect
 
 The goal of this app is to create a simple analog clock using SVG and JavaScript. This project aims to provide a basic understanding of how SVG works and how to use it in web development.
 
+! [SVG Clock Example](images/AnalogSVGClockScreen01.png)
+
 ## Features
 
 - Dynamic SVG creation and manipulation using JavaScript
